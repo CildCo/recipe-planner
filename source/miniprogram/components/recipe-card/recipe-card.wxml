@@ -1,0 +1,22 @@
+<view class="rc rc-{{variant}}" bindtap="onTap" hover-class="rc-hover" hover-stay-time="80">
+  <view class="rc-cover">
+    <image src="{{recipe.cover}}" mode="aspectFill" lazy-load="{{true}}"></image>
+    <text class="rc-index" wx:if="{{variant === 'tile'}}">{{recipe.categoryName}}</text>
+  </view>
+  <view class="rc-body">
+    <view class="rc-top">
+      <text class="rc-title">{{recipe.title}}</text>
+    </view>
+    <text class="rc-summary" wx:if="{{variant !== 'tile'}}">{{recipe.summary}}</text>
+    <view class="rc-meta">
+      <text>{{recipe.time}} 分钟</text>
+      <text class="rc-dot">·</text>
+      <text>{{recipe.servings}} 人份</text>
+      <text class="rc-dot">·</text>
+      <text>{{recipe.difficulty}}</text>
+    </view>
+    <view class="rc-tags" wx:if="{{variant === 'row'}}">
+      <text wx:for="{{recipe.tags}}" wx:key="*this" class="tag">{{item}}</text>
+    </view>
+  </view>
+</view>

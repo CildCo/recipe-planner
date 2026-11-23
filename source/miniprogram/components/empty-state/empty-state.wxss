@@ -1,0 +1,7 @@
+.empty-note {
+  font-size: 23rpx;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 460rpx;
+  margin: 0 auto;
+}

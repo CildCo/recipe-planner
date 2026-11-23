@@ -1,0 +1,9 @@
+{
+  "desc": "关于 sitemap 的配置",
+  "rules": [
+    {
+      "action": "allow",
+      "page": "*"
+    }
+  ]
+}

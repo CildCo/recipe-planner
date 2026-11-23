@@ -1,0 +1,40 @@
+.recipes-head { padding: 6rpx 0 22rpx; }
+
+.pick-hint {
+  margin-top: 8rpx;
+  font-size: 23rpx;
+  color: var(--primary);
+}
+
+.search-row {
+  display: flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12rpx;
+  padding: 0 18rpx;
+}
+
+.search-icon { font-size: 32rpx; color: var(--muted); width: 44rpx; }
+
+.search-input { flex: 1; font-size: 26rpx; height: 76rpx; }
+
+.search-clear {
+  width: 48rpx;
+  text-align: right;
+  font-size: 30rpx;
+  color: var(--muted);
+}
+
+.chip-scroll { width: 100%; white-space: nowrap; margin-top: 20rpx; }
+
+.chip-track { display: flex; padding-bottom: 4rpx; }
+
+.list-head {
+  display: flex;
+  justify-content: space-between;
+  padding: 16rpx 4rpx 14rpx;
+  margin-bottom: 4rpx;
+}
+
+.loading-line { text-align: center; color: var(--muted); font-size: 23rpx; padding: 40rpx 0; }

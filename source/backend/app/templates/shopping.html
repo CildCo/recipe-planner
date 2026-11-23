@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}买菜清单{% endblock %}
+{% block crumb %}运营 / 买菜清单{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">运营 · {{ data.total }} 项</p>
+    <h1>买菜清单</h1>
+    <p class="lede">按一周菜单自动合并同类食材；手动加的东西会一直留着。</p>
+  </div>
+  <div class="head-actions">
+    <a class="btn ghost" href="/admin/shopping.csv?household={{ selected.id if selected else 0 }}&week={{ week.isoformat() }}">{{ icon('download') }} 导出 CSV</a>
+    <form method="post" action="/admin/shopping/generate">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <input type="hidden" name="household" value="{{ selected.id if selected else 0 }}">
+      <input type="hidden" name="week" value="{{ week.isoformat() }}">
+      <button class="btn primary" type="submit">按菜单重新生成</button>
+    </form>
+  </div>
+</section>
+
+<form class="filter-bar" method="get" action="/admin/shopping">
+  <select name="household" aria-label="饭桌">
+    {% for household in households %}
+    <option value="{{ household.id }}" {% if selected and selected.id == household.id %}selected{% endif %}>{{ household.name }}</option>
+    {% endfor %}
+  </select>
+  <input type="date" name="week" value="{{ week.isoformat() }}" aria-label="周起始日">
+  <button class="btn ghost" type="submit">查看</button>
+  <span class="small muted">按周一为一周开始</span>
+</form>
+
+<section class="panel shopping-panel">
+  <header class="shopping-head">
+    <div>
+      <p class="eyebrow">{{ selected.name if selected else '没有饭桌' }}</p>
+      <h2>{{ data.checked }} / {{ data.total }} 已买</h2>
+    </div>
+    <div class="shopping-progress">
+      <span>{{ data.progress }}%</span>
+      <div class="progress-track"><span style="width: {{ data.progress }}%"></span></div>
+    </div>
+  </header>
+
+  {% for group in data.groups %}
+  <div class="shopping-group">
+    <h3>{{ group.name }}<em>{{ group['items']|length }} 项</em></h3>
+    <div class="shopping-rows">
+      {% for item in group['items'] %}
+      <div class="shopping-row {% if item.checked %}is-checked{% endif %}">
+        <form method="post" action="/admin/shopping/{{ item.id }}/toggle">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <input type="hidden" name="next" value="/admin/shopping?household={{ selected.id if selected else 0 }}&week={{ week.isoformat() }}">
+          <button class="check-btn" type="submit" aria-label="{{ '取消已买' if item.checked else '标记已买' }}">{{ '✓' if item.checked else '' }}</button>
+        </form>
+        <span class="shopping-name">{{ item.name }}{% if item.custom %}<i class="custom-tag">手动</i>{% endif %}</span>
+        <span class="shopping-amount">{{ item.amount }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% else %}
+  <div class="empty-block">
+    <p>这周还没有菜单，所以清单是空的。</p>
+    <a class="text-link" href="/admin/households/{{ selected.id if selected else '' }}">去安排一周菜单 →</a>
+  </div>
+  {% endfor %}
+</section>
+
+<section class="panel add-item-panel">
+  <header class="panel-head"><div><p class="eyebrow">手动添加</p><h2>清单里还缺什么？</h2></div></header>
+  <form class="inline-form" method="post" action="/admin/shopping/items">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <input type="hidden" name="household" value="{{ selected.id if selected else 0 }}">
+    <input type="hidden" name="week" value="{{ week.isoformat() }}">
+    <input name="name" placeholder="例如：厨房纸" required maxlength="40">
+    <input name="amount" placeholder="1 包" maxlength="20">
+    <select name="category" aria-label="分类">
+      {% for group in ['蔬菜', '肉蛋', '主食', '调料', '其他'] %}<option value="{{ group }}">{{ group }}</option>{% endfor %}
+    </select>
+    <button class="btn ghost" type="submit">加入清单</button>
+  </form>
+</section>
+{% endblock %}

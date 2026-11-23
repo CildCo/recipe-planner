@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}使用说明{% endblock %}
+{% block crumb %}系统 / 使用说明{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">系统 · 使用说明</p>
+    <h1>从一道菜开始</h1>
+    <p class="lede">这个小程序只做三件事：看菜谱、排一周菜单、生成买菜清单。</p>
+  </div>
+</section>
+
+<div class="help-grid">
+  <section class="panel help-card">
+    <span class="section-no">01</span>
+    <h2>本地跑起来</h2>
+    <p>在 <code>source/</code> 下执行：</p>
+    <pre><code>python -m pip install -r requirements.txt
+python start.py</code></pre>
+    <p>打开 <code>http://127.0.0.1:8020/admin</code>。首次启动的密码在 <code>backend/runtime/admin-password.txt</code>。</p>
+  </section>
+
+  <section class="panel help-card">
+    <span class="section-no">02</span>
+    <h2>连上小程序</h2>
+    <p>用微信开发者工具打开 <code>miniprogram/</code>。默认是本地演示模式，不连后端也能点；要连后端时，把 <code>config/index.js</code> 里的 <code>mode</code> 改成 <code>server</code>，并把 <code>apiBaseUrl</code> 指向这台机器。</p>
+    <p>真机调试需要 HTTPS 域名；开发者工具里可以勾选“不校验合法域名”。</p>
+  </section>
+
+  <section class="panel help-card">
+    <span class="section-no">03</span>
+    <h2>维护菜谱</h2>
+    <p>“新建菜谱”里填菜名、食材、步骤和封面。食材的用量写成数字，生成清单时会自动相加；写“适量”就原样保留。</p>
+    <p>封面统一 1200×900，上传后会自动裁成 4:3。</p>
+  </section>
+
+  <section class="panel help-card">
+    <span class="section-no">04</span>
+    <h2>一周菜单怎么排</h2>
+    <p>小程序“菜单”页按周排，早、午、晚都能放多道菜。点“+”，从菜谱里选一道，设好人份。</p>
+    <p>“清单”页会把这周所有菜的食材合并；同类同单位的会相加。买完一项就勾掉。</p>
+  </section>
+
+  <section class="panel help-card">
+    <span class="section-no">05</span>
+    <h2>家庭共享</h2>
+    <p>每个账号第一次登录会自动建一个饭桌，并生成 6 位邀请码。家人在“我的 → 饭桌”输入邀请码，就能看到同一份菜单和清单。</p>
+  </section>
+
+  <section class="panel help-card">
+    <span class="section-no">06</span>
+    <h2>上线前</h2>
+    <p>把 <code>APP_ENV=production</code>、管理员密码、密钥、小程序 AppID 和 AppSecret 写进 <code>backend/.env</code>；用 MySQL 时改 <code>DATABASE_URL</code>；把 <code>miniprogram/config/index.js</code> 的接口地址换成 HTTPS 域名。</p>
+    <p>完成后先跑 <code>python run_all.py</code>，再打体验版。</p>
+  </section>
+</div>
+{% endblock %}

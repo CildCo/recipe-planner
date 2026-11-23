@@ -1,0 +1,38 @@
+<view class="page about-page">
+  <view class="about-head">
+    <text class="eyebrow">关于</text>
+    <view class="about-title display">饭桌</view>
+    <view class="about-tagline">把一周的饭安排好。</view>
+  </view>
+
+  <view class="about-quote display">好好吃饭，</view>
+  <view class="about-quote display about-quote-tight">是一天里最小的事，</view>
+  <view class="about-quote display about-quote-tight">也是最大的事。</view>
+
+  <view class="about-section">
+    <view class="about-section-title display">为什么做这个</view>
+    <view class="about-copy">每天最难的问题不是“吃什么”，而是“这一周怎么吃”。菜谱收藏了一堆，到了买菜的时候还是想不起来。饭桌把菜谱、一周菜单和买菜清单放在同一条线上：先排菜，再合并食材，最后拎着清单去菜市场。</view>
+  </view>
+
+  <view class="about-section">
+    <view class="about-section-title display">只做三件事</view>
+    <view class="about-list">
+      <view class="about-item"><text class="about-no">01</text><view><text class="about-item-title">菜谱</text><text class="about-item-note">食材、步骤和一句提醒，按分类找得到。</text></view></view>
+      <view class="about-item"><text class="about-no">02</text><view><text class="about-item-title">一周菜单</text><text class="about-item-note">早、午、晚都能排，复制上周只要一下。</text></view></view>
+      <view class="about-item"><text class="about-no">03</text><view><text class="about-item-title">买菜清单</text><text class="about-item-note">自动合并同类食材，买一项勾一项。</text></view></view>
+    </view>
+  </view>
+
+  <view class="about-section">
+    <view class="about-section-title display">一家人一起用</view>
+    <view class="about-copy">每个账号第一次进入会得到一张饭桌和 6 位邀请码。家人输入邀请码，就能看到同一份菜单和清单，谁去买菜都不会买重。</view>
+  </view>
+
+  <view class="about-meta">
+    <view class="meta-row"><text>版本</text><text>{{version}}</text></view>
+    <view class="meta-row"><text>技术</text><text>小程序 + FastAPI + SQLite</text></view>
+    <view class="meta-row"><text>许可</text><text>MIT</text></view>
+  </view>
+
+  <view class="about-foot">饭桌 · 一周菜单与买菜清单</view>
+</view>

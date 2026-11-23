@@ -1,0 +1,56 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/plan/plan",
+    "pages/shopping/shopping",
+    "pages/mine/mine",
+    "pages/recipes/recipes",
+    "pages/recipe/recipe",
+    "pages/household/household",
+    "pages/favorites/favorites",
+    "pages/about/about"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#EEF4F4",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "饭桌",
+    "backgroundColor": "#EEF4F4",
+    "backgroundTextStyle": "dark",
+    "enablePullDownRefresh": false
+  },
+  "tabBar": {
+    "color": "#556E71",
+    "selectedColor": "#1F6F78",
+    "backgroundColor": "#F8FBFB",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "今天",
+        "iconPath": "assets/tabbar/home.png",
+        "selectedIconPath": "assets/tabbar/home-active.png"
+      },
+      {
+        "pagePath": "pages/plan/plan",
+        "text": "菜单",
+        "iconPath": "assets/tabbar/plan.png",
+        "selectedIconPath": "assets/tabbar/plan-active.png"
+      },
+      {
+        "pagePath": "pages/shopping/shopping",
+        "text": "清单",
+        "iconPath": "assets/tabbar/shopping.png",
+        "selectedIconPath": "assets/tabbar/shopping-active.png"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的",
+        "iconPath": "assets/tabbar/mine.png",
+        "selectedIconPath": "assets/tabbar/mine-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

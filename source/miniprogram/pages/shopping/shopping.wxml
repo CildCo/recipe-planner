@@ -1,0 +1,83 @@
+<view class="page shopping-page">
+  <view class="shop-head">
+    <text class="eyebrow">买菜清单</text>
+    <view class="page-title">这一周，买什么</view>
+    <view class="shop-sub">按菜单自动合并；同一种食材、同一个单位会加在一起。</view>
+  </view>
+
+  <view class="week-bar">
+    <text class="week-arrow" bindtap="prevWeek">←</text>
+    <view class="week-center">
+      <text class="week-label display">{{weekLabel}}</text>
+      <text class="week-count">{{checked}} / {{total}} 已买</text>
+    </view>
+    <text class="week-arrow" bindtap="nextWeek">→</text>
+  </view>
+
+  <view class="progress-card">
+    <view class="progress-top">
+      <text class="progress-num display">{{progress}}%</text>
+      <text class="small muted">慢慢买，不着急</text>
+    </view>
+    <view class="progress"><view class="progress-inner" style="width: {{progress}}%"></view></view>
+  </view>
+
+  <view class="shop-groups" wx:if="{{groups.length}}">
+    <view class="shop-group" wx:for="{{groups}}" wx:key="name">
+      <view class="shop-group-head">
+        <text class="shop-group-name display">{{item.name}}</text>
+        <text class="small muted">{{item.items.length}} 项</text>
+      </view>
+      <view
+        class="shop-row {{row.checked ? 'is-checked' : ''}}"
+        wx:for="{{item.items}}"
+        wx:for-item="row"
+        wx:key="id"
+        data-id="{{row.id}}"
+        data-checked="{{row.checked}}"
+        bindtap="toggleItem"
+      >
+        <view class="check-circle {{row.checked ? 'on' : ''}}">{{row.checked ? '✓' : ''}}</view>
+        <text class="shop-name">{{row.name}}<text class="custom-tag" wx:if="{{row.custom}}">手动</text></text>
+        <text class="shop-amount">{{row.amount}}</text>
+      </view>
+    </view>
+  </view>
+
+  <empty-state
+    wx:elif="{{!loading}}"
+    title="清单还是空的"
+    note="先去菜单页排几道菜，再回来生成清单。"
+  />
+
+  <view class="shop-add">
+    <view class="shop-add-head" bindtap="toggleAdd">
+      <text class="display">手动加一项</text>
+      <text class="shop-add-toggle">{{showAdd ? '收起' : '展开'}}</text>
+    </view>
+    <view class="shop-add-body" wx:if="{{showAdd}}">
+      <input class="input" placeholder="例如：厨房纸" placeholder-style="color:#556E71" value="{{name}}" bindinput="onName" maxlength="40" />
+      <input class="input shop-amount-input" placeholder="用量，例如 1 包" placeholder-style="color:#556E71" value="{{amount}}" bindinput="onAmount" maxlength="20" />
+      <view class="shop-cats">
+        <text
+          wx:for="{{categories}}"
+          wx:key="*this"
+          class="pill {{category === item ? 'active' : ''}}"
+          data-name="{{item}}"
+          bindtap="chooseCategory"
+        >{{item}}</text>
+      </view>
+      <view class="btn btn-primary btn-block" bindtap="addItem">加入清单</view>
+    </view>
+  </view>
+
+  <view class="shop-actions">
+    <view class="btn btn-ghost" bindtap="generate">按菜单重新生成</view>
+    <view class="btn btn-ghost" bindtap="copyList">复制清单</view>
+  </view>
+
+  <view class="shop-foot">
+    <text bindtap="goPlan">← 回到菜单</text>
+    <text class="foot-mark">饭桌</text>
+  </view>
+</view>

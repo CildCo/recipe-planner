@@ -1,0 +1,82 @@
+{% macro icon(name) -%}
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  {% if name == 'grid' %}<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+  {% elif name == 'book' %}<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5v16"/><path d="M8 7h8M8 11h6"/>
+  {% elif name == 'plus' %}<path d="M12 5v14M5 12h14"/>
+  {% elif name == 'users' %}<circle cx="9" cy="8" r="3"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M16 5.5a3 3 0 0 1 0 5.8"/><path d="M17.5 14.5A5.5 5.5 0 0 1 21 20"/>
+  {% elif name == 'basket' %}<path d="M4 9h16l-1.4 9.2a2 2 0 0 1-2 1.8H7.4a2 2 0 0 1-2-1.8z"/><path d="M8 9l3-5M16 9l-3-5"/><path d="M9 13v3M15 13v3"/>
+  {% elif name == 'sliders' %}<path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>
+  {% elif name == 'help' %}<circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 1 1 3.4 2.5c-.6.2-.9.7-.9 1.3v.4"/><path d="M12 17h.01"/>
+  {% elif name == 'arrow' %}<path d="M5 12h14M13 6l6 6-6 6"/>
+  {% elif name == 'edit' %}<path d="M4 20h4l10-10-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>
+  {% elif name == 'search' %}<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/>
+  {% elif name == 'download' %}<path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/>
+  {% endif %}
+</svg>
+{%- endmacro %}
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}工作台{% endblock %} · {{ settings.site_name or '饭桌' }}</title>
+  <link rel="stylesheet" href="/static/admin.css?v=5">
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="/admin">
+      <span class="brand-mark">饭</span>
+      <span class="brand-text">
+        <b>{{ settings.site_name or '饭桌' }}</b>
+        <em>菜单与买菜清单</em>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="后台导航">
+      <p class="nav-label">工作台</p>
+      <a class="nav-link {% if active == 'dashboard' %}active{% endif %}" href="/admin">{{ icon('grid') }}<span>总览</span></a>
+
+      <p class="nav-label">内容</p>
+      <a class="nav-link {% if active == 'recipes' %}active{% endif %}" href="/admin/recipes">{{ icon('book') }}<span>菜谱</span></a>
+      <a class="nav-link {% if active == 'new' %}active{% endif %}" href="/admin/recipes/new">{{ icon('plus') }}<span>新建菜谱</span></a>
+
+      <p class="nav-label">运营</p>
+      <a class="nav-link {% if active == 'households' %}active{% endif %}" href="/admin/households">{{ icon('users') }}<span>饭桌</span></a>
+      <a class="nav-link {% if active == 'shopping' %}active{% endif %}" href="/admin/shopping">{{ icon('basket') }}<span>买菜清单</span></a>
+
+      <p class="nav-label">系统</p>
+      <a class="nav-link {% if active == 'settings' %}active{% endif %}" href="/admin/settings">{{ icon('sliders') }}<span>设置</span></a>
+      <a class="nav-link {% if active == 'help' %}active{% endif %}" href="/admin/help">{{ icon('help') }}<span>使用说明</span></a>
+    </nav>
+
+    <div class="sidebar-foot">
+      <span class="status-dot"></span>
+      <span>{% if app_env == 'dev' %}开发{% elif app_env == 'production' %}生产{% else %}{{ app_env }}{% endif %}环境 · 服务正常</span>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="icon-btn menu-toggle" type="button" aria-label="展开导航" data-menu-toggle>☰</button>
+      <div class="crumb">{% block crumb %}总览{% endblock %}</div>
+      <div class="top-actions">
+        <a class="btn ghost sm hide-sm" href="/admin/recipes.json">{{ icon('download') }} 导出菜谱</a>
+        <div class="user-chip"><span class="avatar">{{ '管' if admin_user == 'admin' else (admin_user or '管')[:1] }}</span><span class="hide-sm">{{ admin_user }}</span></div>
+        <form method="post" action="/admin/logout">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <button class="link-btn" type="submit">退出</button>
+        </form>
+      </div>
+    </header>
+
+    <div class="page">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="/static/admin.js?v=3"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

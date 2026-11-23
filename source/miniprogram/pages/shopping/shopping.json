@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "买菜清单",
+  "usingComponents": {
+    "empty-state": "/components/empty-state/empty-state"
+  }
+}

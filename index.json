@@ -1,0 +1,13 @@
+{
+  "repo": "https://github.com/CildCo/recipe-planner",
+  "contentHash": "63fc035d5758e9e0519407a08f85087558a27247249e3a869b66a8588ba80b24",
+  "courses": [
+    {
+      "id": "recipe-planner",
+      "title": "饭桌：一周菜单与买菜清单",
+      "kind": "project",
+      "path": "",
+      "url": "https://github.com/CildCo/recipe-planner"
+    }
+  ]
+}

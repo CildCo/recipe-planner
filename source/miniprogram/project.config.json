@@ -1,0 +1,17 @@
+{
+  "desc": "饭桌 · 菜谱、一周菜单与买菜清单",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "compileHotReLoad": true
+  },
+  "compileType": "miniprogram",
+  "libVersion": "3.6.0",
+  "appid": "touristappid",
+  "projectname": "fanzhuo",
+  "miniprogramRoot": "./",
+  "condition": {}
+}

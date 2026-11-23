@@ -1,0 +1,64 @@
+<view class="page plan-page">
+  <view class="plan-head">
+    <text class="eyebrow">一周菜单</text>
+    <view class="page-title">这一周，吃什么</view>
+    <view class="plan-sub">早、午、晚都能放多道菜；先排好，再去买菜。</view>
+  </view>
+
+  <view class="week-bar">
+    <text class="week-arrow" bindtap="prevWeek">←</text>
+    <view class="week-center">
+      <text class="week-label display">{{weekLabel}}</text>
+      <text class="week-count">{{total}} / 21 餐</text>
+    </view>
+    <text class="week-arrow" bindtap="nextWeek">→</text>
+  </view>
+
+  <view class="plan-tools">
+    <text class="tool-link" bindtap="copyLastWeek">复制上周</text>
+    <text class="tool-link" bindtap="goShopping">看清单 →</text>
+  </view>
+
+  <view class="day-list">
+    <view class="day-card {{item.today ? 'is-today' : ''}}" wx:for="{{days}}" wx:key="date">
+      <view class="day-head">
+        <view class="day-date">
+          <text class="day-num display">{{item.day}}</text>
+          <view class="day-meta">
+            <text class="day-week">{{item.weekday}}</text>
+            <text class="day-cn">{{item.label}}</text>
+          </view>
+        </view>
+        <text class="day-today" wx:if="{{item.today}}">今天</text>
+      </view>
+
+      <view class="meal-block" wx:for="{{item.meals}}" wx:for-item="meal" wx:key="id">
+        <view class="meal-head">
+          <text class="meal-badge">{{meal.name}}</text>
+          <text class="meal-add" data-date="{{item.date}}" data-meal="{{meal.id}}" bindtap="addDish">＋ 加一道</text>
+        </view>
+        <view class="dish-list" wx:if="{{meal.items.length}}">
+          <view class="dish-row" wx:for="{{meal.items}}" wx:for-item="dish" wx:key="id">
+            <image class="dish-cover" src="{{dish.cover}}" mode="aspectFill" data-id="{{dish.id}}" bindtap="openRecipe"></image>
+            <view class="dish-main" data-id="{{dish.id}}" bindtap="openRecipe">
+              <text class="dish-title">{{dish.title}}</text>
+              <text class="dish-meta">{{dish.servings}} 人份 · {{dish.time}} 分钟</text>
+            </view>
+            <text class="dish-remove" data-id="{{dish.id}}" catchtap="removeDish">×</text>
+          </view>
+        </view>
+        <view class="dish-empty" wx:else>还没安排</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="plan-bottom safe-bottom">
+    <view class="plan-bottom-inner">
+      <view class="plan-bottom-text">
+        <text class="display">{{total}}</text>
+        <text class="small muted"> 道菜已安排</text>
+      </view>
+      <view class="btn btn-primary plan-bottom-btn" bindtap="goShopping">生成买菜清单</view>
+    </view>
+  </view>
+</view>

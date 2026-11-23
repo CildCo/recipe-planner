@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}设置{% endblock %}
+{% block crumb %}系统 / 设置{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">系统 · 站点</p>
+    <h1>设置</h1>
+    <p class="lede">这些文字会出现在小程序首页和管理后台。改完保存即可。</p>
+  </div>
+</section>
+
+{% if saved %}<div class="alert success" data-autohide>设置已保存。</div>{% endif %}
+
+<div class="two-col settings-grid">
+  <section class="panel form-section">
+    <header class="section-head"><span class="section-no">01</span><div><h2>站点信息</h2><p>一句话说清楚这个小程序是做什么的。</p></div></header>
+    <form method="post" action="/admin/settings" class="stack-form">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <label class="field"><span>名字</span><input name="site_name" value="{{ settings.site_name or '饭桌' }}" maxlength="20"></label>
+      <label class="field"><span>一句话</span><input name="tagline" value="{{ settings.tagline or '' }}" maxlength="40"></label>
+      <label class="field"><span>介绍</span><textarea name="intro" rows="3" maxlength="120">{{ settings.intro or '' }}</textarea></label>
+      <label class="field"><span>默认人份</span><input name="default_servings" type="number" min="1" max="12" value="{{ settings.default_servings or 2 }}"></label>
+      <div class="save-bar inline"><button class="btn primary" type="submit">保存设置</button></div>
+    </form>
+  </section>
+
+  <section class="panel info-panel">
+    <header class="panel-head"><div><p class="eyebrow">运行信息</p><h2>这台机器</h2></div></header>
+    <dl class="info-list">
+      <div><dt>环境</dt><dd>{% if app_env == 'dev' %}开发{% elif app_env == 'production' %}生产{% else %}{{ app_env }}{% endif %}</dd></div>
+      <div><dt>数据库</dt><dd>SQLite（backend/data/app.db）</dd></div>
+      <div><dt>封面尺寸</dt><dd>1200 × 900，JPG</dd></div>
+      <div><dt>一周开始</dt><dd>周一</dd></div>
+      <div><dt>登录方式</dt><dd>后台账号 + 小程序微信登录</dd></div>
+    </dl>
+    <p class="small muted">生产环境请把 <code>ADMIN_PASSWORD</code>、<code>SECRET_KEY</code>、<code>WECHAT_APPID</code>、<code>WECHAT_SECRET</code> 写进 <code>backend/.env</code>，不要提交。</p>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,109 @@
+<view class="page detail" wx:if="{{recipe}}">
+  <view class="detail-cover">
+    <image src="{{recipe.cover}}" mode="aspectFill"></image>
+    <view class="cover-stamp">{{recipe.categoryName}}</view>
+  </view>
+
+  <view class="detail-head">
+    <text class="eyebrow">{{recipe.categoryName}} · {{recipe.difficulty}}</text>
+    <view class="detail-title display">{{recipe.title}}</view>
+    <view class="detail-summary">{{recipe.summary}}</view>
+    <view class="detail-meta">
+      <text class="meta-item"><text class="meta-value">{{recipe.time}}</text> 分钟</text>
+      <text class="meta-item"><text class="meta-value">{{recipe.servings}}</text> 人份</text>
+      <text>{{recipe.difficulty}}</text>
+    </view>
+    <view class="detail-tags">
+      <text wx:for="{{recipe.tags}}" wx:key="*this" class="tag">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="detail-section">
+    <view class="detail-section-head">
+      <text class="detail-section-title display">食材</text>
+      <text class="small muted">{{recipe.servings}} 人份 · 点一下划掉</text>
+    </view>
+    <view class="ingredient-list">
+      <view
+        class="ingredient-row {{checked[index] ? 'is-checked' : ''}}"
+        wx:for="{{recipe.ingredients}}"
+        wx:key="index"
+        data-index="{{index}}"
+        bindtap="toggleIngredient"
+      >
+        <view class="check-circle {{checked[index] ? 'on' : ''}}">{{checked[index] ? '✓' : ''}}</view>
+        <text class="ingredient-name">{{item.name}}</text>
+        <text class="ingredient-dots"></text>
+        <text class="ingredient-amount">{{item.amount}}{{item.unit}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="detail-section">
+    <view class="detail-section-head">
+      <text class="detail-section-title display">做法</text>
+      <text class="small muted">{{recipe.steps.length}} 步</text>
+    </view>
+    <view class="step-list">
+      <view class="step-row" wx:for="{{recipe.steps}}" wx:key="index">
+        <text class="step-no display">{{index + 1 < 10 ? '0' : ''}}{{index + 1}}</text>
+        <view class="step-body">
+          <text class="step-text">{{item.text}}</text>
+          <text class="step-tip" wx:if="{{item.tip}}">{{item.tip}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="tip-box" wx:if="{{recipe.tips}}">
+    <text class="tip-label">小提示</text>
+    <text class="tip-text">{{recipe.tips}}</text>
+  </view>
+
+  <view class="detail-foot">饭桌 · 把这一顿安排好</view>
+
+  <view class="detail-bar safe-bottom">
+    <view class="fav-btn {{favorite ? 'on' : ''}}" bindtap="toggleFavorite">
+      <text class="fav-icon">{{favorite ? '★' : '☆'}}</text>
+      <text>{{favorite ? '已收藏' : '收藏'}}</text>
+    </view>
+    <view class="btn btn-primary add-btn" bindtap="openSheet">加入菜单</view>
+  </view>
+
+  <view class="sheet-mask" wx:if="{{sheetOpen}}" bindtap="closeSheet"></view>
+  <view class="sheet {{sheetOpen ? 'show' : ''}}" wx:if="{{sheetOpen}}">
+    <view class="sheet-title">放进哪一餐？</view>
+    <scroll-view scroll-x class="sheet-days" enhanced show-scrollbar="{{false}}">
+      <view class="sheet-day-track">
+        <view
+          wx:for="{{days}}"
+          wx:key="key"
+          class="sheet-day {{selectedDay === item.key ? 'active' : ''}}"
+          data-key="{{item.key}}"
+          bindtap="chooseDay"
+        >
+          <text class="sheet-day-week">{{item.weekday}}</text>
+          <text class="sheet-day-date">{{item.day}}</text>
+        </view>
+      </view>
+    </scroll-view>
+    <view class="sheet-meals">
+      <text
+        wx:for="{{meals}}"
+        wx:key="id"
+        class="pill {{selectedMeal === item.id ? 'active' : ''}}"
+        data-id="{{item.id}}"
+        bindtap="chooseMeal"
+      >{{item.name}}</text>
+    </view>
+    <view class="servings-row">
+      <text class="small muted">人份</text>
+      <view class="stepper">
+        <text class="stepper-btn" data-delta="-1" bindtap="changeServings">−</text>
+        <text class="stepper-value">{{servings}}</text>
+        <text class="stepper-btn" data-delta="1" bindtap="changeServings">＋</text>
+      </view>
+    </view>
+    <view class="btn btn-primary btn-block" bindtap="confirmAdd">放进 {{selectedDay === days[0].key ? '今天' : '这天'}}</view>
+  </view>
+</view>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>登录 · {{ settings.site_name or '饭桌' }}</title>
+  <link rel="stylesheet" href="/static/admin.css?v=5">
+</head>
+<body class="login-body">
+  <main class="login-shell">
+    <section class="login-art" aria-hidden="true">
+      <div class="art-top">
+        <span class="stamp">饭桌</span>
+        <span class="art-issue">菜单 · 清单 · 一家人</span>
+      </div>
+      <p class="art-quote">好好吃饭，<br>是一天里最小的事，<br>也是最大的事。</p>
+      <div class="art-covers">
+        <figure class="art-card art-card-a"><img src="/static/covers/tomato-egg.jpg" alt=""></figure>
+        <figure class="art-card art-card-b"><img src="/static/covers/braised-pork.jpg" alt=""></figure>
+        <figure class="art-card art-card-c"><img src="/static/covers/scallion-noodles.jpg" alt=""></figure>
+      </div>
+      <p class="art-foot">菜谱 · 一周菜单 · 买菜清单</p>
+    </section>
+
+    <section class="login-panel">
+      <div class="login-inner">
+        <a class="brand login-brand" href="/">
+          <span class="brand-mark">饭</span>
+          <span class="brand-text">
+            <b>{{ settings.site_name or '饭桌' }}</b>
+            <em>把一周的饭安排好</em>
+          </span>
+        </a>
+        <div class="login-head">
+          <p class="eyebrow">管理后台</p>
+          <h1>回到你的饭桌</h1>
+          <p class="muted">登录后维护菜谱、查看一周菜单和买菜清单。</p>
+        </div>
+
+        {% if error %}<div class="alert error">{{ error }}</div>{% endif %}
+
+        <form class="login-form" method="post" action="/admin/login">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <label class="field">
+            <span>账号</span>
+            <input name="username" autocomplete="username" required autofocus placeholder="admin">
+          </label>
+          <label class="field">
+            <span>密码</span>
+            <input name="password" type="password" autocomplete="current-password" required placeholder="输入密码">
+          </label>
+          <button class="btn primary block" type="submit">进入后台</button>
+        </form>
+
+        {% if app_env != 'production' %}
+        <p class="login-hint">首次启动的密码在 <code>backend/runtime/admin-password.txt</code>，也可以在 <code>.env</code> 里设置 <code>ADMIN_PASSWORD</code>。</p>
+        {% endif %}
+        <p class="login-meta">一个安静的后台，不追踪、不推送。</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

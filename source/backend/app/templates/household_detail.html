@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}{{ household.name }}{% endblock %}
+{% block crumb %}运营 / 饭桌 / {{ household.name }}{% endblock %}
+{% block content %}
+<section class="page-head compact">
+  <div>
+    <p class="eyebrow"><a class="text-link" href="/admin/households">← 返回饭桌</a></p>
+    <h1>{{ household.name }}</h1>
+    <p class="lede">邀请码 <b class="invite-inline">{{ household.invite_code }}</b> · {{ members|length }} 位成员</p>
+  </div>
+  <div class="head-actions">
+    <a class="btn ghost" href="/admin/shopping?household={{ household.id }}&week={{ plan.weekStart }}">看买菜清单 {{ icon('arrow') }}</a>
+  </div>
+</section>
+
+<div class="week-nav">
+  <a class="text-link" href="/admin/households/{{ household.id }}?week={{ prev_week }}">← 上一周</a>
+  <span>{{ plan.label }}</span>
+  <a class="text-link" href="/admin/households/{{ household.id }}?week={{ next_week }}">下一周 →</a>
+</div>
+
+<section class="panel">
+  <div class="plan-table">
+    <div class="plan-head"><span>日期</span>{% for meal in meals %}<span>{{ meal.name }}</span>{% endfor %}</div>
+    {% for day in plan.days %}
+    <div class="plan-row {% if day.today %}is-today{% endif %}">
+      <div class="plan-date"><b>{{ day.day }}</b><em>{{ day.weekday }}</em></div>
+      {% for meal in day.meals %}
+      <div class="plan-cell">
+        {% for item in meal['items'] %}
+        <span class="plan-dish">
+          <img src="{{ item.cover|cover_url }}" alt="" loading="lazy">
+          <span>{{ item.title }}</span>
+          <em>{{ item.servings }} 人份</em>
+        </span>
+        {% else %}
+        <span class="plan-empty">—</span>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<div class="two-col">
+  <section class="panel">
+    <header class="panel-head"><div><p class="eyebrow">成员</p><h2>一起吃饭的人</h2></div></header>
+    <div class="member-list">
+      {% for member in members %}
+      <div class="member-row">
+        <span class="member-dot">{{ member.nickname[:1] }}</span>
+        <span><b>{{ member.nickname }}</b><em>{{ '创建者' if member.id == household.owner_id else '成员' }}</em></span>
+      </div>
+      {% else %}
+      <p class="muted">还没有成员。</p>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="panel">
+    <header class="panel-head"><div><p class="eyebrow">买菜</p><h2>{{ shopping.progress }}% 已买</h2></div></header>
+    <div class="progress-track"><span style="width: {{ shopping.progress }}%"></span></div>
+    <p class="small muted">{{ shopping.checked }} / {{ shopping.total }} 项</p>
+    <div class="shopping-preview">
+      {% for group in shopping.groups %}
+      <div class="preview-group"><span>{{ group.name }}</span><em>{{ group['items']|length }} 项</em></div>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+{% endblock %}

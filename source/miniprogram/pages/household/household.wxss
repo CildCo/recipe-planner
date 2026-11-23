@@ -1,0 +1,90 @@
+.household-page { padding-top: 40rpx; }
+
+.house-head { padding-bottom: 26rpx; }
+
+.house-lede { color: var(--ink-2); font-size: 24rpx; line-height: 1.65; margin-top: 8rpx; }
+
+.current-card {
+  border: 1px solid var(--line);
+  border-radius: 16rpx;
+  background: var(--surface);
+  padding: 24rpx;
+}
+
+.current-top { display: flex; align-items: center; }
+
+.current-mark {
+  width: 80rpx; height: 80rpx; flex: 0 0 80rpx;
+  background: var(--primary-soft); color: var(--primary-dark);
+  border-radius: 14rpx;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 38rpx; font-weight: 650;
+}
+
+.current-main { margin-left: 18rpx; display: flex; flex-direction: column; }
+
+.current-name { font-size: 33rpx; font-weight: 650; }
+
+.current-sub { font-size: 21rpx; color: var(--muted); }
+
+.current-invite {
+  display: flex; align-items: center;
+  margin-top: 18rpx; padding-top: 16rpx;
+  border-top: 1px solid var(--line);
+}
+
+.invite-label { width: 90rpx; font-size: 21rpx; color: var(--muted); }
+
+.invite-value {
+  flex: 1;
+  font-family: var(--mono);
+  font-size: 27rpx;
+  letter-spacing: 6rpx;
+}
+
+.invite-copy { font-size: 22rpx; color: var(--primary); }
+
+.member-list {
+  margin-top: 16rpx;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14rpx;
+  padding: 0 20rpx;
+}
+
+.member-row {
+  display: flex; align-items: center;
+  padding: 14rpx 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.member-row:last-child { border-bottom: 0; }
+
+.member-dot {
+  width: 54rpx; height: 54rpx; border-radius: 50%;
+  background: var(--primary-soft); color: var(--primary-dark);
+  font-family: var(--sans);
+  font-size: 22rpx;
+  font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.member-name { flex: 1; margin-left: 14rpx; font-size: 26rpx; }
+
+.member-role { font-size: 21rpx; color: var(--muted); }
+
+.house-section { margin-top: 34rpx; border-top: 1px solid var(--line-strong); padding-top: 18rpx; }
+
+.house-section-title { font-size: 31rpx; font-weight: 650; }
+
+.house-section-note { font-size: 22rpx; color: var(--muted); margin: 4rpx 0 16rpx; }
+
+.house-input { margin-bottom: 14rpx; }
+
+.code-input { letter-spacing: 8rpx; font-family: var(--mono); }
+
+.household-foot {
+  margin-top: 50rpx; padding-top: 18rpx;
+  border-top: 1px solid var(--line);
+  font-size: 21rpx; letter-spacing: 3rpx; color: var(--muted); text-align: center;
+}

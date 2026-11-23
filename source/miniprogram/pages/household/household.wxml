@@ -1,0 +1,45 @@
+<view class="page household-page">
+  <view class="house-head">
+    <text class="eyebrow">饭桌与成员</text>
+    <view class="page-title">一起吃饭的人</view>
+    <view class="house-lede">一个邀请码，家人就能看到同一份菜单和买菜清单。</view>
+  </view>
+
+  <view class="current-card" wx:if="{{household}}">
+    <view class="current-top">
+      <view class="current-mark display">{{household.name[0]}}</view>
+      <view class="current-main">
+        <text class="current-name display">{{household.name}}</text>
+        <text class="current-sub">{{household.members.length}} 位成员</text>
+      </view>
+    </view>
+    <view class="current-invite">
+      <text class="invite-label">邀请码</text>
+      <text class="invite-value">{{household.inviteCode}}</text>
+      <text class="invite-copy" bindtap="copyCode">复制</text>
+    </view>
+    <view class="member-list">
+      <view class="member-row" wx:for="{{household.members}}" wx:key="id">
+        <view class="member-dot">{{item.initial}}</view>
+        <text class="member-name">{{item.nickname}}</text>
+        <text class="member-role">{{index === 0 ? '创建者' : '成员'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="house-section">
+    <view class="house-section-title display">新建一个饭桌</view>
+    <view class="house-section-note">换个名字，重新开始一份菜单。</view>
+    <input class="input house-input" placeholder="例如：小满的饭桌" placeholder-style="color:#556E71" value="{{name}}" bindinput="onName" maxlength="30" />
+    <view class="btn btn-ghost btn-block" bindtap="create">创建饭桌</view>
+  </view>
+
+  <view class="house-section">
+    <view class="house-section-title display">加入家人的饭桌</view>
+    <view class="house-section-note">输入对方发来的 6 位邀请码。</view>
+    <input class="input house-input code-input" placeholder="例如：ABC123" placeholder-style="color:#556E71" value="{{code}}" bindinput="onCode" maxlength="6" />
+    <view class="btn btn-primary btn-block" bindtap="join">加入</view>
+  </view>
+
+  <view class="household-foot">饭桌 · 一份菜单，一家人</view>
+</view>

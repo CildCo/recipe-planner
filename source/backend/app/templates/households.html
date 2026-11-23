@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}饭桌{% endblock %}
+{% block crumb %}运营 / 饭桌{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">运营 · {{ rows|length }} 个饭桌</p>
+    <h1>饭桌</h1>
+    <p class="lede">一个饭桌就是一份共享菜单。成员用邀请码加入，看到同一份安排和清单。</p>
+  </div>
+</section>
+
+<section class="household-grid">
+  {% for row in rows %}
+  <a class="household-card" href="/admin/households/{{ row.household.id }}">
+    <div class="household-top">
+      <span class="household-mark">{{ row.household.name[:1] }}</span>
+      <span class="invite-code">{{ row.household.invite_code }}</span>
+    </div>
+    <h2>{{ row.household.name }}</h2>
+    <p class="muted">{{ row.members|length }} 位成员 · {{ row.planCount }} 条菜单安排</p>
+    <div class="member-stack">
+      {% for member in row.members[:5] %}
+      <span class="member-dot" title="{{ member.nickname }}">{{ member.nickname[:1] }}</span>
+      {% endfor %}
+      {% if row.members|length > 5 %}<span class="member-dot more">+{{ row.members|length - 5 }}</span>{% endif %}
+    </div>
+    <span class="card-link">打开饭桌 {{ icon('arrow') }}</span>
+  </a>
+  {% else %}
+  <div class="empty-block panel">
+    <p>还没有饭桌。小程序里第一次登录会自动创建一个。</p>
+  </div>
+  {% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% block title %}{{ '编辑菜谱' if recipe else '新建菜谱' }}{% endblock %}
+{% block crumb %}内容 / 菜谱 / {{ '编辑' if recipe else '新建' }}{% endblock %}
+{% block content %}
+<section class="page-head compact">
+  <div>
+    <p class="eyebrow"><a class="text-link" href="/admin/recipes">← 返回菜谱</a></p>
+    <h1>{{ recipe.title if recipe else '新建菜谱' }}</h1>
+    <p class="lede">{{ '改完保存，小程序下拉刷新就能看到。' if recipe else '先写菜名和食材，步骤可以慢慢补。' }}</p>
+  </div>
+  {% if recipe %}
+  <div class="head-actions">
+    <span class="status-pill {{ 'published' if recipe.published else 'draft' }}">{{ '已发布' if recipe.published else '草稿' }}</span>
+    <a class="btn ghost" href="/admin/recipes/{{ recipe.id }}/edit" target="_blank" rel="noopener">在新窗口打开</a>
+  </div>
+  {% endif %}
+</section>
+
+{% if error %}<div class="alert error">{{ error }}</div>{% endif %}
+
+<form class="editor-grid" method="post" action="/admin/recipes/save" enctype="multipart/form-data" id="recipe-form">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  {% if recipe %}<input type="hidden" name="recipe_id" value="{{ recipe.id }}">{% endif %}
+
+  <div class="editor-main">
+    <section class="panel form-section">
+      <header class="section-head"><span class="section-no">01</span><div><h2>基本信息</h2><p>菜名、分类和一句话介绍。</p></div></header>
+      <div class="field-grid two">
+        <label class="field span-2"><span>菜名 <em>必填</em></span><input name="title" id="f-title" value="{{ recipe.title if recipe else '' }}" required placeholder="例如：番茄炒蛋"></label>
+        <label class="field"><span>链接名</span><input name="slug" value="{{ recipe.slug if recipe else '' }}" placeholder="留空自动生成"></label>
+        <label class="field"><span>分类</span>
+          <select name="category" id="f-category">
+            {% for category in categories %}
+            <option value="{{ category.id }}" {% if recipe and recipe.category == category.id %}selected{% endif %}>{{ category.name }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label class="field span-2"><span>一句话介绍</span><textarea name="summary" id="f-summary" rows="2" placeholder="这道菜最值得做的地方">{{ recipe.summary if recipe else '' }}</textarea></label>
+        <label class="field"><span>时间（分钟）</span><input name="time" id="f-time" type="number" min="1" value="{{ recipe.time_minutes if recipe else 20 }}"></label>
+        <label class="field"><span>人份</span><input name="servings" id="f-servings" type="number" min="1" value="{{ recipe.servings if recipe else 2 }}"></label>
+        <label class="field"><span>难度</span>
+          <select name="difficulty" id="f-difficulty">
+            {% for level in ['容易', '中等', '进阶'] %}
+            <option value="{{ level }}" {% if recipe and recipe.difficulty == level %}selected{% endif %}>{{ level }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label class="field"><span>标签</span><input name="tags" id="f-tags" value="{{ tag_text }}" placeholder="用顿号分隔，例如：快手、下饭"></label>
+      </div>
+    </section>
+
+    <section class="panel form-section">
+      <header class="section-head"><span class="section-no">02</span><div><h2>封面</h2><p>4:3 横图，1200×900，主体放中间。</p></div></header>
+      <div class="cover-editor">
+        <div class="cover-frame">
+          <img id="cover-preview" src="{{ recipe.cover|cover_url if recipe and recipe.cover else '/static/covers/tomato-egg.jpg' }}" alt="封面预览">
+          <span class="cover-ratio">4:3</span>
+        </div>
+        <div class="cover-fields">
+          <label class="file-drop">
+            <input type="file" name="cover_file" id="cover-file" accept="image/jpeg,image/png,image/webp">
+            <b>上传新封面</b>
+            <span>JPG / PNG / WebP，不超过 8MB，上传后自动裁成 1200×900。</span>
+          </label>
+          <label class="field"><span>或者填图片地址</span><input name="cover" id="f-cover" value="{{ recipe.cover if recipe else '' }}" placeholder="covers/xxx.jpg 或 /uploads/covers/xxx.jpg"></label>
+          <p class="small muted">种子封面在 <code>backend/app/static/covers/</code>，上传的封面会存到 <code>backend/uploads/covers/</code>。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel form-section">
+      <header class="section-head"><span class="section-no">03</span><div><h2>食材</h2><p>用量写数字会自动合并到买菜清单；写“适量”也可以。</p></div></header>
+      <div class="ingredient-table" id="ingredient-table">
+        <div class="ingredient-head"><span>食材</span><span>用量</span><span>单位</span><span>分类</span><span></span></div>
+        {% for row in ingredient_rows %}
+        <div class="ingredient-row">
+          <input name="ingredient_name" value="{{ row.name }}" placeholder="番茄">
+          <input name="ingredient_amount" value="{{ row.amount }}" placeholder="2">
+          <input name="ingredient_unit" value="{{ row.unit }}" placeholder="个">
+          <select name="ingredient_group">
+            {% for group in ['蔬菜', '肉蛋', '主食', '调料', '其他'] %}
+            <option value="{{ group }}" {% if row.group == group %}selected{% endif %}>{{ group }}</option>
+            {% endfor %}
+          </select>
+          <button class="icon-btn remove-row" type="button" aria-label="删除这一行">×</button>
+        </div>
+        {% endfor %}
+        {% if not ingredient_rows %}
+          {% for index in range(3) %}
+          <div class="ingredient-row">
+            <input name="ingredient_name" value="" placeholder="{{ '番茄' if index == 0 else '' }}">
+            <input name="ingredient_amount" value="" placeholder="{{ '2' if index == 0 else '' }}">
+            <input name="ingredient_unit" value="" placeholder="{{ '个' if index == 0 else '' }}">
+            <select name="ingredient_group">
+              {% for group in ['蔬菜', '肉蛋', '主食', '调料', '其他'] %}
+              <option value="{{ group }}">{{ group }}</option>
+              {% endfor %}
+            </select>
+            <button class="icon-btn remove-row" type="button" aria-label="删除这一行">×</button>
+          </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+      <button class="btn ghost sm" type="button" id="add-ingredient">{{ icon('plus') }} 加一行食材</button>
+    </section>
+
+    <section class="panel form-section">
+      <header class="section-head"><span class="section-no">04</span><div><h2>步骤</h2><p>一步一个动作，别把三步写成一段。</p></div></header>
+      <div class="step-list" id="step-list">
+        {% for row in step_rows %}
+        <div class="step-row">
+          <span class="step-no">{{ '%02d'|format(loop.index) }}</span>
+          <div class="step-fields">
+            <textarea name="step_text" rows="2" placeholder="这一步做什么">{{ row.text }}</textarea>
+            <input name="step_tip" value="{{ row.tip }}" placeholder="可选：一个小提醒">
+          </div>
+          <button class="icon-btn remove-row" type="button" aria-label="删除这一步">×</button>
+        </div>
+        {% endfor %}
+        {% if not step_rows %}
+          {% for index in range(3) %}
+          <div class="step-row">
+            <span class="step-no">{{ '%02d'|format(index + 1) }}</span>
+            <div class="step-fields">
+              <textarea name="step_text" rows="2" placeholder="{{ '把食材准备好' if index == 0 else '这一步做什么' }}"></textarea>
+              <input name="step_tip" value="" placeholder="可选：一个小提醒">
+            </div>
+            <button class="icon-btn remove-row" type="button" aria-label="删除这一步">×</button>
+          </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+      <button class="btn ghost sm" type="button" id="add-step">{{ icon('plus') }} 加一步</button>
+    </section>
+
+    <section class="panel form-section">
+      <header class="section-head"><span class="section-no">05</span><div><h2>收尾</h2><p>一句提醒，和是否发布。</p></div></header>
+      <label class="field"><span>小提示</span><textarea name="tips" rows="3" placeholder="例如：番茄选熟一点的，汁水足。">{{ recipe.tips if recipe else '' }}</textarea></label>
+      <label class="switch-row">
+        <input type="checkbox" name="published" {% if not recipe or recipe.published %}checked{% endif %}>
+        <span class="switch"></span>
+        <span><b>发布到小程序</b><em>取消勾选就只保存在后台，作为草稿。</em></span>
+      </label>
+    </section>
+
+    <div class="save-bar">
+      <a class="btn ghost" href="/admin/recipes">取消</a>
+      <button class="btn primary" type="submit">保存菜谱</button>
+    </div>
+  </div>
+
+  <aside class="editor-preview">
+    <p class="eyebrow">小程序里长这样</p>
+    <article class="phone-card">
+      <div class="phone-cover"><img id="preview-cover" src="{{ recipe.cover|cover_url if recipe and recipe.cover else '/static/covers/tomato-egg.jpg' }}" alt=""></div>
+      <div class="phone-body">
+        <span class="phone-category" id="preview-category">{{ recipe.category|category_name if recipe else '家常菜' }}</span>
+        <h3 id="preview-title">{{ recipe.title if recipe else '菜名会显示在这里' }}</h3>
+        <p id="preview-summary">{{ recipe.summary if recipe else '一句话介绍，告诉别人这道菜为什么值得做。' }}</p>
+        <div class="phone-meta"><span id="preview-time">{{ recipe.time_minutes if recipe else 20 }} 分钟</span><span id="preview-servings">{{ recipe.servings if recipe else 2 }} 人份</span><span id="preview-difficulty">{{ recipe.difficulty if recipe else '容易' }}</span></div>
+        <div class="phone-tags" id="preview-tags">
+          {% if recipe %}{% for tag in recipe.tags|json_loads %}<span>{{ tag }}</span>{% endfor %}{% endif %}
+        </div>
+      </div>
+    </article>
+    <p class="small muted">封面会同时用于小程序列表、详情页和后台列表。保持主体居中，四周留一点空。</p>
+
+    {% if recipe %}
+    <div class="danger-zone">
+      <p class="eyebrow">危险操作</p>
+      <form method="post" action="/admin/recipes/{{ recipe.id }}/delete" data-confirm="删除后，菜单里相关安排也会一起移除。确定删除「{{ recipe.title }}」？">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <button class="btn danger block" type="submit">删除这道菜谱</button>
+      </form>
+    </div>
+    {% endif %}
+  </aside>
+</form>
+
+<template id="ingredient-template">
+  <div class="ingredient-row">
+    <input name="ingredient_name" value="" placeholder="食材">
+    <input name="ingredient_amount" value="" placeholder="用量">
+    <input name="ingredient_unit" value="" placeholder="单位">
+    <select name="ingredient_group">
+      {% for group in ['蔬菜', '肉蛋', '主食', '调料', '其他'] %}<option value="{{ group }}">{{ group }}</option>{% endfor %}
+    </select>
+    <button class="icon-btn remove-row" type="button" aria-label="删除这一行">×</button>
+  </div>
+</template>
+
+<template id="step-template">
+  <div class="step-row">
+    <span class="step-no">00</span>
+    <div class="step-fields">
+      <textarea name="step_text" rows="2" placeholder="这一步做什么"></textarea>
+      <input name="step_tip" value="" placeholder="可选：一个小提醒">
+    </div>
+    <button class="icon-btn remove-row" type="button" aria-label="删除这一步">×</button>
+  </div>
+</template>
+{% endblock %}
+{% block scripts %}
+<script>
+  window.RECIPE_EDITOR = { coverFallback: "/static/covers/tomato-egg.jpg" };
+</script>
+{% endblock %}

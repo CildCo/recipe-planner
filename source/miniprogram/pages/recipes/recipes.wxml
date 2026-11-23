@@ -1,0 +1,54 @@
+<view class="page recipes">
+  <view class="recipes-head">
+    <text class="eyebrow">{{pickMode ? '选一道菜' : '菜谱'}}</text>
+    <view class="page-title">{{pickMode ? '放进菜单' : '想吃什么'}}</view>
+    <view class="pick-hint" wx:if="{{pickMode}}">{{pickLabel}} · 选一道，点一下就放进去</view>
+  </view>
+
+  <view class="search-row">
+    <text class="search-icon">⌕</text>
+    <input
+      class="search-input"
+      placeholder="搜菜名、食材或标签"
+      placeholder-style="color:#556E71"
+      value="{{q}}"
+      bindinput="onSearch"
+      confirm-type="search"
+    />
+    <text class="search-clear" wx:if="{{q}}" bindtap="clearSearch">×</text>
+  </view>
+
+  <scroll-view scroll-x class="chip-scroll" enhanced show-scrollbar="{{false}}">
+    <view class="chip-track">
+      <text class="pill {{active === 'all' ? 'active' : ''}}" data-id="all" bindtap="chooseCategory">全部</text>
+      <text
+        wx:for="{{categories}}"
+        wx:key="id"
+        class="pill {{active === item.id ? 'active' : ''}}"
+        data-id="{{item.id}}"
+        bindtap="chooseCategory"
+      >{{item.name}}</text>
+    </view>
+  </scroll-view>
+
+  <view class="list-head">
+    <text class="small muted">{{total}} 道菜</text>
+    <text class="small muted" wx:if="{{pickMode}}" bindtap="goBack">取消</text>
+  </view>
+
+  <view class="recipe-list" wx:if="{{list.length}}">
+    <view class="recipe-item" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="openRecipe">
+      <recipe-card recipe="{{item}}" variant="row" />
+    </view>
+  </view>
+
+  <empty-state
+    wx:elif="{{!loading}}"
+    title="没有找到这道菜"
+    note="换个关键词，或者切回全部分类看看。"
+  />
+
+  <view class="loading-line" wx:if="{{loading}}">正在翻菜谱…</view>
+
+  <view class="footer-mark">饭桌 · 一周菜单</view>
+</view>

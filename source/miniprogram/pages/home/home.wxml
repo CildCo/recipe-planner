@@ -1,0 +1,96 @@
+<view class="page home">
+  <view class="home-head">
+    <text class="eyebrow">{{dateLabel}}</text>
+    <view class="home-title display">今天吃什么？</view>
+    <view class="home-sub">{{site.tagline}}</view>
+  </view>
+
+  <view class="week-strip">
+    <view class="strip-head">
+      <text class="strip-label">本周</text>
+      <text class="strip-count">{{planCount}} / 21 餐</text>
+      <text class="strip-link" bindtap="goPlan">安排 →</text>
+    </view>
+    <view class="strip-days">
+      <view
+        wx:for="{{weekDays}}"
+        wx:key="date"
+        class="strip-day {{item.today ? 'is-today' : ''}}"
+        bindtap="goPlan"
+      >
+        <text class="strip-week">{{item.weekday}}</text>
+        <text class="strip-date">{{item.day}}</text>
+        <view class="strip-dot {{item.count ? 'has' : ''}}"></view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section today-section">
+    <view class="section-head">
+      <text class="section-title">今天的饭</text>
+      <text class="section-link" bindtap="goPlan">改一改</text>
+    </view>
+    <view class="today-list">
+      <view class="today-row" wx:for="{{todayMeals}}" wx:key="id">
+        <text class="meal-badge">{{item.name}}</text>
+        <view class="today-dishes">
+          <block wx:if="{{item.items.length}}">
+            <text
+              class="today-dish"
+              wx:for="{{item.items}}"
+              wx:for-item="dish"
+              wx:key="id"
+              data-id="{{dish.id}}"
+              bindtap="goRecipe"
+            >{{dish.title}}</text>
+          </block>
+          <text wx:else class="today-empty">还没安排</text>
+        </view>
+        <text class="today-plus" bindtap="goPlan">＋</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section">
+    <view class="section-head">
+      <text class="section-title">这周可以做</text>
+      <text class="section-link" bindtap="goRecipes">全部菜谱</text>
+    </view>
+    <scroll-view scroll-x class="tile-scroll" enhanced show-scrollbar="{{false}}">
+      <view class="tile-track">
+        <recipe-card
+          wx:for="{{recommended}}"
+          wx:key="id"
+          recipe="{{item}}"
+          variant="tile"
+          bind:select="goRecipe"
+        />
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="section">
+    <view class="section-head">
+      <text class="section-title">按分类找</text>
+      <text class="section-link" bindtap="goRecipes">搜索</text>
+    </view>
+    <view class="category-list">
+      <view
+        class="category-row"
+        wx:for="{{categories}}"
+        wx:key="id"
+        data-category="{{item.id}}"
+        bindtap="goRecipes"
+      >
+        <text class="category-name display">{{item.name}}</text>
+        <text class="category-note">{{item.note}}</text>
+        <text class="category-count">{{item.count}} 道</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="home-foot">
+    <text>一周菜单 · 买菜清单 · 家庭共享</text>
+    <text class="foot-mark">饭桌</text>
+  </view>
+</view>

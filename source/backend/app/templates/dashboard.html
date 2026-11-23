@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title %}总览{% endblock %}
+{% block crumb %}总览{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">总览 · {{ week.label if week else '本周' }}</p>
+    <h1>这周，吃得怎么样？</h1>
+    <p class="lede">菜谱、菜单和清单都在这里。先把一周安排好，剩下的交给清单。</p>
+  </div>
+  <div class="head-actions">
+    <a class="btn primary" href="/admin/recipes/new">{{ icon('plus') }} 新建菜谱</a>
+    <a class="btn ghost" href="/admin/households">查看饭桌 {{ icon('arrow') }}</a>
+  </div>
+</section>
+
+<section class="stat-strip" aria-label="关键数字">
+  <div class="stat">
+    <span class="stat-label">本周已安排</span>
+    <strong>{{ week.total if week else 0 }}<small> / 21 餐</small></strong>
+    <span class="stat-note">早、午、晚三格</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">菜谱</span>
+    <strong>{{ recipes|length }}<small> 道</small></strong>
+    <span class="stat-note">已发布 {{ published }} 道</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">买菜清单</span>
+    <strong>{{ shopping.checked if shopping else 0 }}<small> / {{ shopping.total if shopping else 0 }}</small></strong>
+    <span class="stat-note">本周已买</span>
+  </div>
+  <div class="stat">
+    <span class="stat-label">饭桌</span>
+    <strong>{{ households|length }}<small> 个</small></strong>
+    <span class="stat-note">{{ users|length }} 位成员</span>
+  </div>
+</section>
+
+<div class="dashboard-grid">
+  <section class="panel week-panel">
+    <header class="panel-head">
+      <div>
+        <p class="eyebrow">一周菜单</p>
+        <h2>{{ week.label if week else '还没有菜单' }}</h2>
+      </div>
+      {% if household %}<a class="text-link" href="/admin/households/{{ household.id }}">打开饭桌 {{ icon('arrow') }}</a>{% endif %}
+    </header>
+
+    {% if week %}
+    <div class="week-list">
+      {% for day in week.days %}
+      <a class="week-row {% if day.today %}is-today{% endif %}" href="/admin/households/{{ household.id }}?week={{ week.weekStart }}">
+        <span class="week-date"><b>{{ day.day }}</b><em>{{ day.weekday }}</em></span>
+        <span class="week-meals">
+          {% for meal in day.meals %}
+          <span class="meal-line">
+            <i>{{ meal.name }}</i>
+            {% if meal['items'] %}
+              {% for item in meal['items'] %}<span class="dish">{{ item.title }}</span>{% if not loop.last %}<span class="sep">·</span>{% endif %}{% endfor %}
+            {% else %}<span class="dish empty">未安排</span>{% endif %}
+          </span>
+          {% endfor %}
+        </span>
+        <span class="week-count">{{ day.count }}</span>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-block">
+      <p>还没有饭桌。</p>
+      <a class="btn ghost" href="/admin/households">去看看</a>
+    </div>
+    {% endif %}
+  </section>
+
+  <aside class="side-stack">
+    <section class="panel">
+      <header class="panel-head">
+        <div>
+          <p class="eyebrow">今天</p>
+          <h2>{{ today_items|length and '今天的饭' or '今天还没安排' }}</h2>
+        </div>
+        <span class="small muted">{{ week.weekEnd if week else '' }}</span>
+      </header>
+      {% if today_items %}
+      <div class="today-meals">
+        {% for meal in today_items %}
+        <div class="today-row">
+          <span class="meal-badge">{{ meal.name }}</span>
+          <div class="today-dishes">
+            {% if meal['items'] %}
+              {% for item in meal['items'] %}<span>{{ item.title }}</span>{% endfor %}
+            {% else %}<span class="muted">空着</span>{% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="muted body-copy">点开一周菜单，把今天的两三道菜放进去。</p>
+      {% endif %}
+      <a class="btn ghost block" href="/admin/households/{{ household.id if household else '' }}">安排今天</a>
+    </section>
+
+    <section class="panel">
+      <header class="panel-head">
+        <div>
+          <p class="eyebrow">买菜</p>
+          <h2>{{ shopping.progress if shopping else 0 }}% 已买</h2>
+        </div>
+        <a class="text-link" href="/admin/shopping">清单</a>
+      </header>
+      <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ shopping.progress if shopping else 0 }}">
+        <span style="width: {{ shopping.progress if shopping else 0 }}%"></span>
+      </div>
+      <p class="small muted">{{ shopping.checked if shopping else 0 }} 项已买，{{ (shopping.total - shopping.checked) if shopping else 0 }} 项待买。</p>
+      <div class="shopping-preview">
+        {% for group in (shopping.groups if shopping else [])[:3] %}
+        <div class="preview-group">
+          <span>{{ group.name }}</span>
+          <em>{{ group['items']|length }} 项</em>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+  </aside>
+</div>
+
+<div class="dashboard-bottom">
+  <section class="panel">
+    <header class="panel-head">
+      <div>
+        <p class="eyebrow">内容结构</p>
+        <h2>菜谱分类</h2>
+      </div>
+      <a class="text-link" href="/admin/recipes">全部菜谱 {{ icon('arrow') }}</a>
+    </header>
+    <div class="bar-list">
+      {% for category in category_counts %}
+      <div class="bar-row">
+        <span class="bar-name">{{ category.name }}</span>
+        <span class="bar-track"><span class="bar-fill tone-{{ category.color }}" style="width: {{ category.percent }}%"></span></span>
+        <span class="bar-count">{{ category.count }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="panel">
+    <header class="panel-head">
+      <div>
+        <p class="eyebrow">最近更新</p>
+        <h2>刚改过的菜谱</h2>
+      </div>
+    </header>
+    <div class="mini-list">
+      {% for recipe in recent %}
+      <a class="mini-row" href="/admin/recipes/{{ recipe.id }}/edit">
+        <img src="{{ recipe.cover|cover_url }}" alt="" loading="lazy">
+        <span class="mini-main">
+          <b>{{ recipe.title }}</b>
+          <em>{{ recipe.category|category_name }} · {{ recipe.time_minutes }} 分钟</em>
+        </span>
+        <span class="status-dot {{ 'ok' if recipe.published else 'draft' }}"></span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+{% endblock %}

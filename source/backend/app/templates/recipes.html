@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}菜谱{% endblock %}
+{% block crumb %}内容 / 菜谱{% endblock %}
+{% block content %}
+<section class="page-head">
+  <div>
+    <p class="eyebrow">内容 · {{ total }} 道菜谱</p>
+    <h1>菜谱</h1>
+    <p class="lede">每道菜都有食材、步骤和一句提醒。发布后才会出现在小程序里。</p>
+  </div>
+  <div class="head-actions">
+    <a class="btn primary" href="/admin/recipes/new">{{ icon('plus') }} 新建菜谱</a>
+  </div>
+</section>
+
+{% if request.query_params.get('msaved') %}
+<div class="alert success" data-autohide>菜谱已保存。</div>
+{% endif %}
+
+<form class="filter-bar" method="get" action="/admin/recipes">
+  <label class="search-box">
+    {{ icon('search') }}
+    <input name="q" value="{{ q }}" placeholder="搜菜名、简介或标签">
+  </label>
+  <select name="category" aria-label="分类">
+    <option value="all">全部分类</option>
+    {% for category in categories %}
+    <option value="{{ category.id }}" {% if category.id == request.query_params.get('category') %}selected{% endif %}>{{ category.name }}</option>
+    {% endfor %}
+  </select>
+  <select name="status" aria-label="状态">
+    <option value="">全部状态</option>
+    <option value="published" {% if status == 'published' %}selected{% endif %}>已发布</option>
+    <option value="draft" {% if status == 'draft' %}selected{% endif %}>草稿</option>
+  </select>
+  <button class="btn ghost" type="submit">筛选</button>
+  {% if q or (category and category != 'all') or status %}<a class="text-link" href="/admin/recipes">清空</a>{% endif %}
+</form>
+
+<section class="panel list-panel">
+  <div class="recipe-table">
+    {% for recipe in rows %}
+    <article class="recipe-row">
+      <a class="row-cover" href="/admin/recipes/{{ recipe.id }}/edit">
+        <img src="{{ recipe.cover|cover_url }}" alt="" loading="lazy">
+      </a>
+      <div class="row-main">
+        <div class="row-title">
+          <a href="/admin/recipes/{{ recipe.id }}/edit">{{ recipe.title }}</a>
+          <span class="status-pill {{ 'published' if recipe.published else 'draft' }}">{{ '已发布' if recipe.published else '草稿' }}</span>
+        </div>
+        <p class="row-summary">{{ recipe.summary or '还没有写简介。' }}</p>
+        <div class="row-meta">
+          <span>{{ recipe.category|category_name }}</span>
+          <span>{{ recipe.time_minutes }} 分钟</span>
+          <span>{{ recipe.servings }} 人份</span>
+          <span>{{ recipe.difficulty }}</span>
+          {% for tag in recipe.tags|json_loads %}
+          <span class="tag">{{ tag }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="row-actions">
+        <a class="btn ghost sm" href="/admin/recipes/{{ recipe.id }}/edit">{{ icon('edit') }} 编辑</a>
+        <form method="post" action="/admin/recipes/{{ recipe.id }}/toggle">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <button class="link-btn" type="submit">{{ '下架' if recipe.published else '发布' }}</button>
+        </form>
+        <form method="post" action="/admin/recipes/{{ recipe.id }}/delete" data-confirm="删除后，菜单里相关安排也会一起移除。确定删除「{{ recipe.title }}」？">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <button class="link-btn danger" type="submit">删除</button>
+        </form>
+      </div>
+    </article>
+    {% else %}
+    <div class="empty-block">
+      <p>没有符合条件的菜谱。</p>
+      <a class="btn ghost" href="/admin/recipes/new">新建一道</a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

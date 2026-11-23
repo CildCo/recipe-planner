@@ -1,0 +1,64 @@
+<view class="page mine-page">
+  <view class="mine-head">
+    <text class="eyebrow">我的</text>
+    <view class="page-title">一张饭桌</view>
+  </view>
+
+  <view class="house-card" wx:if="{{household}}">
+    <view class="house-top">
+      <view class="house-mark display">{{household.name[0]}}</view>
+      <view class="house-main">
+        <text class="house-name display">{{household.name}}</text>
+        <text class="house-sub">{{household.members.length}} 位成员 · 一起吃饭</text>
+      </view>
+      <text class="house-edit" bindtap="goHousehold">管理</text>
+    </view>
+    <view class="invite-row">
+      <text class="invite-label">邀请码</text>
+      <text class="invite-value">{{household.inviteCode}}</text>
+      <text class="invite-copy" bindtap="copyCode">复制</text>
+    </view>
+    <view class="member-stack">
+      <view class="member-dot" wx:for="{{household.members}}" wx:key="id">{{item.initial}}</view>
+    </view>
+  </view>
+
+  <view class="stat-row">
+    <view class="stat-cell" bindtap="goPlan">
+      <text class="stat-num display">{{planCount}}</text>
+      <text class="stat-label">本周菜数</text>
+    </view>
+    <view class="stat-cell" bindtap="goShopping">
+      <text class="stat-num display">{{shoppingCount}}</text>
+      <text class="stat-label">清单项</text>
+    </view>
+    <view class="stat-cell" bindtap="goFavorites">
+      <text class="stat-num display">{{favoriteCount}}</text>
+      <text class="stat-label">收藏</text>
+    </view>
+  </view>
+
+  <view class="menu-list">
+    <view class="menu-row" bindtap="goFavorites">
+      <view class="menu-main"><text class="menu-title">我的收藏</text><text class="menu-note">做过的、想做的，都放在这里</text></view>
+      <text class="menu-arrow">→</text>
+    </view>
+    <view class="menu-row" bindtap="goHousehold">
+      <view class="menu-main"><text class="menu-title">饭桌与成员</text><text class="menu-note">邀请家人，共用一份菜单</text></view>
+      <text class="menu-arrow">→</text>
+    </view>
+    <view class="menu-row" bindtap="goAbout">
+      <view class="menu-main"><text class="menu-title">关于饭桌</text><text class="menu-note">这个小程序想做的事</text></view>
+      <text class="menu-arrow">→</text>
+    </view>
+    <view class="menu-row" wx:if="{{isMock}}" bindtap="resetDemo">
+      <view class="menu-main"><text class="menu-title">重置演示数据</text><text class="menu-note">恢复初始菜单、清单和收藏</text></view>
+      <text class="menu-arrow">↺</text>
+    </view>
+  </view>
+
+  <view class="mine-foot">
+    <text>{{site.siteName}} · {{site.tagline}}</text>
+    <text class="foot-mark">把日子过成一桌饭</text>
+  </view>
+</view>
