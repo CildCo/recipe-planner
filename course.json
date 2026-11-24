@@ -2,24 +2,9 @@
   "id": "recipe-planner",
   "title": "饭桌：一周菜单与买菜清单",
   "kind": "project",
-  "status": "published",
   "categoryId": "miniprogram",
   "difficulty": "入门",
-  "lessonCount": 0,
-  "sourceDir": "source",
   "runCommand": "python run_all.py",
-  "includePaths": [
-    "miniprogram/**",
-    "backend/app/templates/**",
-    "backend/app/static/**",
-    "backend/app/data/recipes.json",
-    ".env.example"
-  ],
-  "package": "dist/recipe-planner-source.zip",
-  "backendPackage": "backend/uploads/packages/recipe-planner.zip",
   "verifiedAt": "2026-10-24",
-  "verifiedEnv": "Python 3.11 / Windows 11 / Node 18",
-  "article": "public-account/articles/recipe-planner.md",
-  "notes": "26 道原创示例菜谱；海盐青浅色界面；小程序 mock/server 双模式；后台菜谱、饭桌、清单；封面统一 1200×900。",
-  "fileSize": 1468048
+  "verifiedEnv": "Python 3.11 / Windows 11 / Node 18"
 }
